@@ -9,10 +9,11 @@ export default function useLocalStorage(key, defaultValue) {
     return defaultValue;
   });
 
-  const setToLocalStorage = (data) => {
-    localStorage.setItem(key, JSON.stringify(data));
+  const setToLocalStorage = (data, noNotUseLocalStorage = false) => {
     setValue(data);
+    if(!noNotUseLocalStorage) localStorage.setItem(key, JSON.stringify(data));
+    if(data == undefined) localStorage.removeItem(key)
   };
   // use setValue only if you do not want to update the local storage
-  return [value, setToLocalStorage, setValue];
+  return [value, setToLocalStorage];
 }

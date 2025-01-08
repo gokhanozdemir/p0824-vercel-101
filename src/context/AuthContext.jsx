@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -9,7 +9,7 @@ const initialUserData = {};
 const key = 'userInfo';
 
 export default function AuthProvider({ children }) {
-  const [userData, setUserDataToLocal, setUserStateOnly] = useLocalStorage(key, initialUserData);
+  const [userData, setUserData] = useLocalStorage(key, initialUserData);
 
   const handleLogin = (loginData) => {
     const loginToaster = toast.loading('Please wait...');
@@ -26,13 +26,9 @@ export default function AuthProvider({ children }) {
         });
 
         console.log('loginData.rememberMe', loginData.rememberMe);
-
-        console.log('response.data', response.data);
-        if (!!loginData.rememberMe) {
-          setUserDataToLocal(response.data);
-        } else {
-          setUserStateOnly(response.data)
-        }
+       
+        setUserData(response.data, !loginData.rememberMe);
+       
 
       })
       .catch(function (error) {
@@ -47,14 +43,19 @@ export default function AuthProvider({ children }) {
       });
   };
 
+  const isLoggedIn = Boolean(userData?.accessToken)
+
   const handleLogout = () => {
-    setUserDataToLocal(initialUserData);
-    setUserStateOnly(initialUserData)
+    setUserData();
   };
 
-  const authTools = { userData, handleLogin, handleLogout };
+  const authTools = { userData, handleLogin, handleLogout, isLoggedIn };
 
   return (
     <AuthContext.Provider value={authTools}>{children}</AuthContext.Provider>
   );
+}
+
+export const useAuth = () => {
+  return useContext(AuthContext)
 }
