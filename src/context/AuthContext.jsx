@@ -9,7 +9,7 @@ const initialUserData = {};
 const key = 'userInfo';
 
 export default function AuthProvider({ children }) {
-  const [userData, setUserData] = useLocalStorage(key, initialUserData);
+  const [userData, setUserDataToLocal, setUserStateOnly] = useLocalStorage(key, initialUserData);
 
   const handleLogin = (loginData) => {
     const loginToaster = toast.loading('Please wait...');
@@ -27,10 +27,12 @@ export default function AuthProvider({ children }) {
 
         console.log('loginData.rememberMe', loginData.rememberMe);
 
-        //if (!!loginData.rememberMe) {
-          console.log('response.data', response.data);
-          setUserData(response.data);
-        // }
+        console.log('response.data', response.data);
+        if (!!loginData.rememberMe) {
+          setUserDataToLocal(response.data);
+        } else {
+          setUserStateOnly(response.data)
+        }
 
       })
       .catch(function (error) {
@@ -46,7 +48,8 @@ export default function AuthProvider({ children }) {
   };
 
   const handleLogout = () => {
-    setUserData(initialUserData);
+    setUserDataToLocal(initialUserData);
+    setUserStateOnly(initialUserData)
   };
 
   const authTools = { userData, handleLogin, handleLogout };

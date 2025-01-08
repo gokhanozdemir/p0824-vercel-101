@@ -13,6 +13,6 @@ export default function useLocalStorage(key, defaultValue) {
     localStorage.setItem(key, JSON.stringify(data));
     setValue(data);
   };
-
-  return [value, setToLocalStorage];
+  // use setValue only if you do not want to update the local storage
+  return [value, setToLocalStorage, setValue];
 }
