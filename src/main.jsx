@@ -13,13 +13,13 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
       <BrowserRouter>
+    <AuthProvider>
         <QueryClientProvider client={queryClient}>
           <ToastContainer />
           <App />
         </QueryClientProvider>
-      </BrowserRouter>
     </AuthProvider>
+      </BrowserRouter>
   </StrictMode>
 );

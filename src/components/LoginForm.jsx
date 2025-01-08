@@ -1,11 +1,10 @@
-import { useEffect, useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import './Form.css';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 function LoginForm() {
-  const { userData, handleLogin } = useContext(AuthContext);
+  const { handleLogin } = useAuth();
 
   const initialForm = {
     userInfo: 'emilys',
@@ -13,13 +12,7 @@ function LoginForm() {
     rememberMe: false,
   };
 
-  useEffect(() => {
-    if (userData?.accessToken) {
-      history.push('/who-is-watching');
-    }
-  }, []);
 
-  let history = useHistory();
   const {
     register,
     handleSubmit,
