@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-
+import { useHistory } from 'react-router-dom';
 export const AuthContext = createContext();
 
 const initialUserData = {};
@@ -10,6 +10,8 @@ const key = 'userInfo';
 
 export default function AuthProvider({ children }) {
   const [userData, setUserData] = useLocalStorage(key, initialUserData);
+
+  const history = useHistory()
 
   const handleLogin = (loginData) => {
     const loginToaster = toast.loading('Please wait...');
@@ -29,7 +31,7 @@ export default function AuthProvider({ children }) {
        
         setUserData(response.data, !loginData.rememberMe);
        
-
+        history.push("/")
       })
       .catch(function (error) {
         console.log(error);

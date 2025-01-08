@@ -4,7 +4,7 @@ import './App.css';
 import Profiles from './components/Profiles';
 import LoginForm from './components/LoginForm';
 import { AuthContext } from './context/AuthContext';
-
+import PrivateRoute from './components/PrivateRoute';
 /*   
 
   TODO: https://dummyjson.com/docs/auth adresindeki dökümantasyona göre login olduk.
@@ -45,15 +45,18 @@ function App() {
         </ul>
       </nav>
       <Switch>
-        <Route path="/who-is-watching">
+        <PrivateRoute path="/who-is-watching">
           <Profiles />
-        </Route>
-        <Route path="/profile/:profileID">
+        </PrivateRoute>
+        <PrivateRoute path="/profile/:profileID">
           <ProfileDetail />
-        </Route>
-        <Route path="/">
+        </PrivateRoute>
+        <Route path="/login">
           <LoginForm />
         </Route>
+        <PrivateRoute path="/">
+          <Profiles />
+        </PrivateRoute>
       </Switch>
     </div>
   );
