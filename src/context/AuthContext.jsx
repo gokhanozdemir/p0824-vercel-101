@@ -1,0 +1,60 @@
+import { Children, createContext } from 'react';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+
+export const AuthContext = createContext();
+
+const initialUserData = {};
+const key = 'userInfo';
+
+export default function AuthProvider({ children }) {
+  const [userData, setUserData] = useLocalStorage(key, initialUserData);
+  const history = useHistory();
+
+  const handleLogin = (loginData) => {
+    const loginToaster = toast.loading('Please wait...');
+    axios
+      .post('https://dummyjson.com/auth/login', loginData)
+      .then(function (response) {
+        console.log(response);
+        toast.update(loginToaster, {
+          render: 'All is good, redirecting...',
+          type: 'success',
+          isLoading: false,
+          closeOnClick: true,
+          autoClose: 2000,
+        });
+
+        console.log('loginData.rememberMe', loginData.rememberMe);
+
+        if (!!loginData.rememberMe) {
+          console.log('response.data', response.data);
+          setUserData(response.data);
+        }
+
+        history.push('/who-is-watching');
+      })
+      .catch(function (error) {
+        console.log(error);
+        toast.update(loginToaster, {
+          render: error.response?.data?.message,
+          type: 'error',
+          isLoading: false,
+          closeOnClick: true,
+          autoClose: 5000,
+        });
+      });
+  };
+
+  const handleLogout = () => {
+    setUserData(initialUserData);
+  };
+
+  const authTools = { userData, handleLogin, handleLogout };
+
+  return (
+    <AuthContext.Provider value={authTools}>{children}</AuthContext.Provider>
+  );
+}
